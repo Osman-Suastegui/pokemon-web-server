@@ -1,12 +1,12 @@
 import sql from 'mssql'
 const dbsettings  = {
-    user:"oman",
-    password:"papas123",
-    server:"127.0.0.1",
-    database:'pokemon',
-    options: {
-        trustServerCertificate: true,
-      }
+  server: "servidor-tnt.database.windows.net",
+  database: 'pokepoke',
+  user: 'tnt-admin',
+  password: 'papas123.',
+  options: {
+    encrypt: true,
+  }
 }
 
 export const getconnection = async () =>{
@@ -17,5 +17,5 @@ export const getconnection = async () =>{
     console.log(error.message);
   }
 }
-getconnection();
+
 export {sql}
