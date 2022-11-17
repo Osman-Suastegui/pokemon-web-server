@@ -4,7 +4,9 @@ import bcrypt from "bcrypt";
 const saltRounds = 10;
 
 const router = Router()
-
+router.get("/"), (req,res) => {
+    res.send("Bienvenido al servicio web de Pokemon Elias Melendez Portillo, Juan Pablo Najera Castro y Suastegui Lopez Osman")
+}
 router.get('/obtenerPokemones', async (req, res) => {
     try {
         const pool = await getconnection();
