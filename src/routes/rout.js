@@ -4,9 +4,42 @@ import bcrypt from "bcrypt";
 const saltRounds = 10;
 
 const router = Router()
-router.get("/"), (req,res) => {
-    res.send("Bienvenido al servicio web de Pokemon Elias Melendez Portillo, Juan Pablo Najera Castro y Suastegui Lopez Osman")
-}
+
+router.get("/obtenerHistorial/:usuario", async(req,res) => {
+    const usuario = req.params.usuario
+    const pool = await getconnection();
+    const result = await pool.request()
+    .input('usuario', sql.VarChar, usuario)
+    .query(`
+    SELECT h.usuario,
+    up1.nombre AS 'usuariopoke1',up1.img_frente AS 'usuarioImgPoke1',
+    up2.nombre AS 'usuariopoke2' ,up2.img_frente AS 'usuarioImgPoke2',
+    up3.nombre AS 'usuariopoke3' ,up3.img_frente AS 'usuarioImgPoke3',
+    h.rival,
+    rp1.nombre AS 'rivalPoke1',rp1.img_frente AS 'rivalImgPoke1',
+    rp2.nombre AS 'rivalPoke2',rp2.img_frente AS 'rivalImgPoke2',
+    rp3.nombre AS 'rivalPoke3',rp3.img_frente AS 'rivalImgPoke3',
+    h.resulCombate,h.fecha,h.tiempo
+    FROM historial AS h
+    inner join pokemones AS up1 ON up1.pokemonID = h.up1 
+    INNER JOIN pokemones AS up2 ON up2.pokemonID = h.up2
+    INNER JOIN pokemones AS up3 ON up3.pokemonID = h.up3
+    INNER JOIN pokemones AS rp1 ON rp1.pokemonID = h.rp1
+    INNER JOIN pokemones AS rp2 ON rp2.pokemonID = h.rp2
+    INNER JOIN pokemones AS rp3 ON rp3.pokemonID = h.rp3
+    WHERE usuario  = @usuario
+    `)
+    res.json(result.recordset)
+
+    
+})
+router.get("/obtenerVidaTotalPokemon/:id",async (req,res)=>{
+    const id = req.params.id
+    const pool = await getconnection();
+    const result = await pool.request().input('pokemonID',sql.Int,id).query("SELECT vida FROM tiposPokemon WHERE tipoID=@pokemonID")
+    res.json(result.recordset[0])
+})
+
 router.get('/obtenerPokemones', async (req, res) => {
     try {
         const pool = await getconnection();
@@ -114,7 +147,6 @@ router.post("/eliminarPokemon", async (req, res) => {
 router.post("/obtenerEquipo", async (req, res) => {
     try {
         const { usuario } = req.body
-        console.log("usuari ", usuario)
         const pool = await getconnection();
         const pokemones = await pool.request()
             .input("usuario", sql.VarChar, usuario)
@@ -148,7 +180,7 @@ router.post("/guardarPokemonEquipo", async (req, res) => {
 
 router.post('/registrarse', async (req, res) => {
 
- 
+
     try {
         const { nomUsuario, email, contra } = req.body;
 
@@ -185,4 +217,7 @@ router.get("/obtenerRanking", async (req, res) => {
         res.send(error.message)
     }
 })
+
+
+
 export default router

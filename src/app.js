@@ -57,8 +57,21 @@ io.on('connection', (socket) => {
     })
 
     socket.on("mensaje", (mensaje) => {
-        console.log("msg servidor ", mensaje)
         io.to(mensaje.sala).emit("mimensaje", { "usuario": mensaje.usuario, "mensaje": mensaje.mensaje })
+    })
+
+    socket.on("enviarEntrenador",entrenador => {
+        io.to(entrenador.sala).emit("recibirEntrenador",entrenador)
+    })
+    socket.on("cambiarPokemon",pokemon=>{
+        io.to(pokemon.sala).emit("recibirCambioPokemon",pokemon)
+
+        
+
+    })
+    socket.on("enviarHabilidad",habilidadEnviada =>{
+        console.log("habilidad ",habilidadEnviada)
+        io.to(habilidadEnviada.sala).emit("recibirHabilidad",habilidadEnviada)
     })
 
 
