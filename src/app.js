@@ -63,6 +63,7 @@ io.on('connection', (socket) => {
     socket.on("enviarEntrenador",entrenador => {
         io.to(entrenador.sala).emit("recibirEntrenador",entrenador)
     })
+    
     socket.on("cambiarPokemon",pokemon=>{
         io.to(pokemon.sala).emit("recibirCambioPokemon",pokemon)
 

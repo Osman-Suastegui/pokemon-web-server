@@ -5,6 +5,38 @@ const saltRounds = 10;
 
 const router = Router()
 
+
+router.get("/obtenerPuntaje/:usuario",async(req,res) => {
+    const usuario = req.params.usuario
+    const pool = await getconnection();
+    const result = await pool.request()
+    .input("usuario",sql.VarChar,usuario)
+    .query("SELECT puntaje FROM usuarios WHERE nomusuario=@usuario")
+
+    res.json(result.recordset)
+    
+})
+router.post("/insertarHistorial",async (req,res) => {
+
+    const { nombreUsuario,up1,up2,up3,nombreRival,rp1,rp2,rp3,resultCombate,fecha,tiempo} = req.body
+
+    const pool = await getconnection();
+    const result = await pool.request()
+    .input("nombreUsuario",sql.VarChar,nombreUsuario)
+    .input("up1",sql.Int,up1)
+    .input("up2",sql.Int,up2)
+    .input("up3",sql.Int,up3)
+    .input("nombreRival",sql.VarChar,nombreRival)
+    .input("rp1",sql.Int,rp1)
+    .input("rp2",sql.Int,rp2)
+    .input("rp3",sql.Int,rp3)
+    .input("resultCombate",sql.VarChar,resultCombate)
+    .input("fecha",sql.Date,fecha)
+    .input("tiempo",sql.Int,tiempo)
+    .query(`INSERT INTO historial (usuario,up1,up2,up3,rival,rp1,rp2,rp3,resulCombate,fecha,tiempo) 
+            VALUES(@nombreUsuario,@up1,@up2,@up3,@nombreRival,@rp1,@rp2,@rp3,@resultCombate,@fecha,@tiempo)
+            `)
+})
 router.get("/obtenerHistorial/:usuario", async(req,res) => {
     const usuario = req.params.usuario
     const pool = await getconnection();
@@ -36,7 +68,14 @@ router.get("/obtenerHistorial/:usuario", async(req,res) => {
 router.get("/obtenerVidaTotalPokemon/:id",async (req,res)=>{
     const id = req.params.id
     const pool = await getconnection();
-    const result = await pool.request().input('pokemonID',sql.Int,id).query("SELECT vida FROM tiposPokemon WHERE tipoID=@pokemonID")
+    const result = await pool.request()
+    .input('pokemonID',sql.Int,id)
+    .query(`
+        SELECT t.vida FROM pokemones AS p
+        INNER JOIN tiposPokemon AS t
+        ON t.tipoID = P.tipoID
+        WHERE p.pokemonID = @pokemonID
+    `)
     res.json(result.recordset[0])
 })
 
