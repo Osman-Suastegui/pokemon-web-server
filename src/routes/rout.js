@@ -5,7 +5,21 @@ const saltRounds = 10;
 
 const router = Router()
 
-
+router.patch("/actualizarPuntaje",async(req,res) => {
+    const {puntos,usuario,puntosActuales} = req.body
+    console.log(req.body)
+    let puntosActualizados = 0
+    if(puntosActuales + puntos <= 0){
+        puntosActualizados = 0
+    }else{
+        puntosActualizados = puntosActuales + puntos
+    }
+    const pool = await getconnection();
+    const result =await pool.request()
+    .input('usuario',sql.VarChar,usuario)
+    .input('puntosActualizados',sql.Int,puntosActualizados)
+    .query('UPDATE usuarios SET puntaje = @puntosActualizados WHERE nomusuario=@usuario')
+})
 router.get("/obtenerPuntaje/:usuario",async(req,res) => {
     const usuario = req.params.usuario
     const pool = await getconnection();
@@ -17,7 +31,7 @@ router.get("/obtenerPuntaje/:usuario",async(req,res) => {
     
 })
 router.post("/insertarHistorial",async (req,res) => {
-
+    console.log("entro aca")
     const { nombreUsuario,up1,up2,up3,nombreRival,rp1,rp2,rp3,resultCombate,fecha,tiempo} = req.body
 
     const pool = await getconnection();
@@ -59,7 +73,7 @@ router.get("/obtenerHistorial/:usuario", async(req,res) => {
     INNER JOIN pokemones AS rp1 ON rp1.pokemonID = h.rp1
     INNER JOIN pokemones AS rp2 ON rp2.pokemonID = h.rp2
     INNER JOIN pokemones AS rp3 ON rp3.pokemonID = h.rp3
-    WHERE usuario  = @usuario
+    WHERE usuario  = @usuario ORDER BY h.fecha DESC
     `)
     res.json(result.recordset)
 

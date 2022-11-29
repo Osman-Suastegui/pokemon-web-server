@@ -1,5 +1,14 @@
 import sql from 'mssql'
 const dbsettings  = {
+  // server:"localhost",
+  // database:"pokemon",
+  // user:"oman",
+  // password:"papas123",
+  // options:{
+  //   trustCertificate: false,
+  //   encrypt:false
+  // }
+
   server: "servidor-tnt.database.windows.net",
   database: 'pokepoke',
   user: 'tnt-admin',

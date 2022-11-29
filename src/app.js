@@ -67,12 +67,23 @@ io.on('connection', (socket) => {
     socket.on("cambiarPokemon",pokemon=>{
         io.to(pokemon.sala).emit("recibirCambioPokemon",pokemon)
 
-        
-
     })
     socket.on("enviarHabilidad",habilidadEnviada =>{
-        console.log("habilidad ",habilidadEnviada)
+        console.log(habilidadEnviada)
         io.to(habilidadEnviada.sala).emit("recibirHabilidad",habilidadEnviada)
+    })
+    
+
+    socket.on("enviarProbabilidad",(msg)=>{
+        let {nombre1,nombre2,sala} = msg
+        let enviarNombre = ""
+        if(Math.random() <= 0.5){
+            enviarNombre = nombre1
+        }else{
+            enviarNombre = nombre2
+        }
+
+        io.to(sala).emit("recibirProbablidad" ,enviarNombre)
     })
 
 
