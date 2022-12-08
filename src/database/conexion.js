@@ -1,12 +1,11 @@
 import sql from 'mssql'
 const dbsettings  = {
-  server:"localhost",
+  server:"servidor-invernadero.database.windows.net",
   database:"pokemon",
-  user:"oman",
-  password:"papas123",
+  user:"ismael",
+  password:"mayel02-",
   options:{
-    trustCertificate: false,
-    encrypt:false
+    encrypt:true
   }
 
   // server: "servidor-tnt.database.windows.net",
